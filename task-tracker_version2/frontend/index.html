@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ TaskMaster Pro | Advanced Task Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-tasks"></i>
+                <h1>TaskMaster <span class="pro">Pro</span></h1>
+            </div>
+            <div class="stats">
+                <div class="stat-card">
+                    <i class="fas fa-list-check"></i>
+                    <span id="total-tasks">0</span>
+                    <small>Total</small>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-hourglass-half"></i>
+                    <span id="pending-tasks">0</span>
+                    <small>Pending</small>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="completed-tasks">0</span>
+                    <small>Completed</small>
+                </div>
+                <div class="stat-card">
+                    <i class="fas fa-chart-line"></i>
+                    <span id="completion-rate">0%</span>
+                    <small>Rate</small>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Left Panel: Add Task -->
+            <div class="left-panel">
+                <div class="card add-task-card">
+                    <h2><i class="fas fa-plus-circle"></i> Add New Task</h2>
+                    <form id="add-task-form">
+                        <div class="form-group">
+                            <input type="text" id="task-title" placeholder="Task title *" required>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="task-description" placeholder="Description (optional)" rows="3"></textarea>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="task-category"><i class="fas fa-tag"></i> Category</label>
+                                <select id="task-category">
+                                    <option value="work">💼 Work</option>
+                                    <option value="personal">👤 Personal</option>
+                                    <option value="shopping">🛒 Shopping</option>
+                                    <option value="health">🏥 Health</option>
+                                    <option value="learning">📚 Learning</option>
+                                    <option value="other">🔹 Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="task-priority"><i class="fas fa-flag"></i> Priority</label>
+                                <select id="task-priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                    <option value="urgent">Urgent</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="task-due"><i class="fas fa-calendar-day"></i> Due Date</label>
+                            <input type="date" id="task-due">
+                        </div>
+                        <div class="form-group">
+                            <label for="task-tags"><i class="fas fa-hashtag"></i> Tags (comma separated)</label>
+                            <input type="text" id="task-tags" placeholder="docker, devops, practice">
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus"></i> Add Task
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Quick Actions -->
+                <div class="card quick-actions">
+                    <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                    <div class="actions">
+                        <button class="btn btn-secondary" onclick="clearCompleted()">
+                            <i class="fas fa-broom"></i> Clear Completed
+                        </button>
+                        <button class="btn btn-secondary" onclick="loadTasks()">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="btn btn-secondary" onclick="exportTasks()">
+                            <i class="fas fa-download"></i> Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Task List -->
+            <div class="right-panel">
+                <div class="card task-list-card">
+                    <div class="task-list-header">
+                        <h2><i class="fas fa-list-ul"></i> My Tasks</h2>
+                        <div class="filters">
+                            <button class="filter-btn active" onclick="filterTasks('all')">All</button>
+                            <button class="filter-btn" onclick="filterTasks('pending')">Pending</button>
+                            <button class="filter-btn" onclick="filterTasks('completed')">Completed</button>
+                            <select id="category-filter" onchange="filterByCategory()">
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="search-tasks" placeholder="Search tasks..." onkeyup="searchTasks()">
+                    </div>
+
+                    <div id="tasks-container">
+                        <!-- Tasks will be loaded here -->
+                        <div class="empty-state">
+                            <i class="fas fa-clipboard-list"></i>
+                            <h3>No tasks yet</h3>
+                            <p>Add your first task to get started!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>TaskMaster Pro v2.0 | Built with Flask & Docker | 
+                <span id="api-status" class="status-indicator">
+                    <i class="fas fa-circle"></i> Checking API...
+                </span>
+            </p>
+        </footer>
+    </div>
+
+    <!-- Edit Task Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Edit Task</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="edit-task-form">
+                    <input type="hidden" id="edit-task-id">
+                    <!-- Form fields will be populated by JavaScript -->
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
