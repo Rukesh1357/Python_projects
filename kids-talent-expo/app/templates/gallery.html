@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Talent Gallery</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<header class="simple-header">
+    <h1>🎭 Talent Gallery</h1>
+    <a class="btn small" href="/">⬅ Back Home</a>
+</header>
+
+<div class="gallery">
+    {% for t in talents %}
+    <div class="gallery-card">
+        <img src="{{ url_for('static', filename='images/' + t.image) }}" alt="Talent">
+        <h3>{{ t.kid }}</h3>
+        <p>{{ t.name }}</p>
+    </div>
+    {% endfor %}
+</div>
+
+</body>
+</html>
+
