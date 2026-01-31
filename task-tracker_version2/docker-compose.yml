@@ -16,10 +16,10 @@ services:
   frontend:
     image: nginx:alpine
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
-      - ./frontend:/usr/share/nginx/html
-      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+          - /root/Python_projects/task-tracker_version2/frontend:/usr/share/nginx/html
+          - /root/Python_projects/task-tracker_version2/nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend
     networks:
